@@ -1,13 +1,8 @@
 package com.aspectsecurity.contrast.integration.newrelic;
 
 import com.contrastsecurity.rest.*;
-import com.contrastsecurity.sdk.App;
-import com.contrastsecurity.sdk.Apps;
-import com.contrastsecurity.sdk.ContrastConnector;
-import com.contrastsecurity.sdk.exception.InitializationException;
 import com.newrelic.metrics.publish.Agent;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 public class ContrastAgent extends Agent {
