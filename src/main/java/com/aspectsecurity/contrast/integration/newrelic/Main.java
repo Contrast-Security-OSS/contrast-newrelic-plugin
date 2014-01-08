@@ -3,6 +3,8 @@ package com.aspectsecurity.contrast.integration.newrelic;
 import com.newrelic.metrics.publish.Runner;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
 
+import java.io.File;
+
 public class Main {
     public static void main(String[] args) {
         Runner runner = new Runner();

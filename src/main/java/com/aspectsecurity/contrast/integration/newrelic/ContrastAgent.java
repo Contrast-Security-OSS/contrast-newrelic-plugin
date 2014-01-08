@@ -42,32 +42,39 @@ public class ContrastAgent extends Agent {
     @Override
     public void pollCycle() {
         Apps apps = contrast.getAllAppData();
+
+        if (apps == null) {
+            LOG.severe("No applications found for account. Please check your configuration.");
+            System.exit(0);
+        }
+
         reportMetric(CONTRAST, "value", apps.getApps().size());
 
         for (App app : apps.getApps())
             if (app.getName().equals(contrastConfig.getAppName())) {
+                App application = contrast.getSingleAppData(app);
                 // Total Traces
-                reportMetric(getComponentLabel("Traces"), "traces", app.getNumTraces());
+                reportMetric(getComponentLabel("Traces"), "traces", application.getNumTraces());
 
                 // Libraries
-                reportMetric(getComponentLabel("Libraries/Stale"), "libraries", app.getAppStats().getAppLibraries().getStale());
-                reportMetric(getComponentLabel("Libraries/Total"), "libraries", app.getAppStats().getAppLibraries().getTotal());
-                reportMetric(getComponentLabel("Libraries/Unknown"), "libraries", app.getAppStats().getAppLibraries().getUnknown());
+                reportMetric(getComponentLabel("Libraries/Stale"), "libraries", application.getAppStats().getAppLibraries().getStale());
+                reportMetric(getComponentLabel("Libraries/Total"), "libraries", application.getAppStats().getAppLibraries().getTotal());
+                reportMetric(getComponentLabel("Libraries/Unknown"), "libraries", application.getAppStats().getAppLibraries().getUnknown());
 
                 // Coverage
-                reportMetric(getComponentLabel("Coverage/Total"), "methods", app.getAppStats().getMethodsTotal());
-                reportMetric(getComponentLabel("Coverage/Seen"), "methods", app.getAppStats().getMethodsSeen());
+                reportMetric(getComponentLabel("Coverage/Total"), "methods", application.getAppStats().getMethodsTotal());
+                reportMetric(getComponentLabel("Coverage/Seen"), "methods", application.getAppStats().getMethodsSeen());
 
                 // Vulnerabilities (By Severity)
-                reportMetric(getComponentLabel("Vulnerabilities/Severity/Critical"), "vulnerabilities", app.getAppStats().getAppVulns().getCriticals());
-                reportMetric(getComponentLabel("Vulnerabilities/Severity/High"), "vulnerabilities", app.getAppStats().getAppVulns().getHighs());
-                reportMetric(getComponentLabel("Vulnerabilities/Severity/Medium"), "vulnerabilities", app.getAppStats().getAppVulns().getMediums());
-                reportMetric(getComponentLabel("Vulnerabilities/Severity/Low"), "vulnerabilities", app.getAppStats().getAppVulns().getLows());
-                reportMetric(getComponentLabel("Vulnerabilities/Severity/Note"), "vulnerabilities", app.getAppStats().getAppVulns().getNotes());
+                reportMetric(getComponentLabel("Vulnerabilities/Severity/Critical"), "vulnerabilities", application.getAppStats().getAppVulns().getCriticals());
+                reportMetric(getComponentLabel("Vulnerabilities/Severity/High"), "vulnerabilities", application.getAppStats().getAppVulns().getHighs());
+                reportMetric(getComponentLabel("Vulnerabilities/Severity/Medium"), "vulnerabilities", application.getAppStats().getAppVulns().getMediums());
+                reportMetric(getComponentLabel("Vulnerabilities/Severity/Low"), "vulnerabilities", application.getAppStats().getAppVulns().getLows());
+                reportMetric(getComponentLabel("Vulnerabilities/Severity/Note"), "vulnerabilities", application.getAppStats().getAppVulns().getNotes());
 
                 // Vulnerabilities (By Type)
-                for (String key : app.getUniqueTraceTypes().keySet()) {
-                    reportMetric(getComponentLabel("Vulnerabilities/Category/" + key), "vulnerabilities", app.getUniqueTraceTypes().get(key).size());
+                for (String key : application.getUniqueTraceTypes().keySet()) {
+                    reportMetric(getComponentLabel("Vulnerabilities/Category/" + key), "vulnerabilities", application.getUniqueTraceTypes().get(key).size());
                 }
             }
     }
